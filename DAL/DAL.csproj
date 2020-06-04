@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200517104646_PropFix.cs" />
+    <Compile Remove="Migrations\20200517104646_PropFix.Designer.cs" />
+    <Compile Remove="Migrations\20200517104925_PropFix.cs" />
+    <Compile Remove="Migrations\20200517104925_PropFix.Designer.cs" />
+    <Compile Remove="Migrations\20200517110032_NewInitial.cs" />
+    <Compile Remove="Migrations\20200517110032_NewInitial.Designer.cs" />
+    <Compile Remove="Migrations\20200517112212_PropFixAddit.cs" />
+    <Compile Remove="Migrations\20200517112212_PropFixAddit.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
