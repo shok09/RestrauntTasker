@@ -14,29 +14,29 @@ namespace API.Controllers
 {
     [Authorize]
     [ApiController]
-    public class ProjectController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        public ProjectController(IOrderService projectService) =>
-            _projectService = projectService;
+        public OrderController(IOrderService orderService) =>
+            _orderService = orderService;
 
-        readonly IOrderService _projectService;
+        readonly IOrderService _orderService;
 
         [HttpGet]
-        [Route("project/{id}")]
+        [Route("order/{id}")]
         [Authorize(Policy = "RequirePerformerRole")]
         public async Task<IActionResult> GetProject(int id)
         {
-            var project = await _projectService.
+            var order = await _orderService.
                 GetOrderByIdAsync(id);
 
-            return Ok(project);
+            return Ok(order);
         }
 
         [HttpPost]
-        [Route("project/add")]
-        public async Task<IActionResult> AddProjectAsync([FromBody] OrderDTO projectDTO)
+        [Route("order/add")]
+        public async Task<IActionResult> AddProjectAsync([FromBody] OrderDTO orderDTO)
         {
-            await _projectService.CreateOrderAsync(projectDTO);
+            await _orderService.CreateOrderAsync(orderDTO);
 
             return Ok();
         }
