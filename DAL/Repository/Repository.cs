@@ -14,9 +14,9 @@ namespace DAL.Repository
         where T : BaseEntity<int>
     {
 
-        readonly RestrauntTrackerContext _context;
+        readonly RestrauntTaskerContext _context;
 
-        public Repository(RestrauntTrackerContext context) =>
+        public Repository(RestrauntTaskerContext context) =>
             _context = context;
 
         public Task<T> GetByIdAsync(int id)

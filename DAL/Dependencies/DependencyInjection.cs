@@ -14,13 +14,13 @@ namespace DAL.Dependencies
         public static IServiceCollection AddDalConfiguration
             (this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<RestrauntTrackerContext>(options =>
+            services.AddDbContext<RestrauntTaskerContext>(options =>
             options.UseLazyLoadingProxies().
             UseSqlServer(configuration.
             GetConnectionString("RestrauntTaskerDataBase")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<RestrauntTrackerContext>();
+                .AddEntityFrameworkStores<RestrauntTaskerContext>();
 
             services.Configure<IdentityOptions>(opt =>
             {

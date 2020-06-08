@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,16 @@ namespace API.Services.JwtAuth
                 );
 
             return new AccessToken(new JwtSecurityTokenHandler().WriteToken(jwt), (int)_jwtOptions.ValidFor.TotalSeconds);
+        }
+
+        public string GenerateRefreshToken(int size = 32)
+        {
+            var randomNumber = new byte[size];
+
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

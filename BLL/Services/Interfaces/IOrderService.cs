@@ -8,11 +8,11 @@ namespace BLL.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task AddPerformerAsync(OrderDTO orderDTO, UserDTO performer);
-        Task ChangeDescriptionAsync(OrderDTO orderDTO, string description);
-        Task ChangeManagerAsync(OrderDTO orderDTO, UserDTO manager);
-        Task CreateOrderAsync(OrderDTO orderDTO);
-        Task DeleteOrderAsync(OrderDTO orderDTO, UserDTO manager);
+        Task AddPerformerAsync(OrderDTO projectDTO, UserDTO performer);
+        Task ChangeDescriptionAsync(OrderDTO projectDTO, string description);
+        Task ChangeManagerAsync(OrderDTO projectDTO, UserDTO manager);
+        Task CreateOrderAsync(OrderDTO projectDTO);
+        Task DeleteOrderAsync(OrderDTO projectDTO, UserDTO manager);
         Task<IEnumerable<OrderDTO>> GetByManagerAsync(string name);
         Task<OrderDTO> GetOrderByIdAsync(int id);
     }

@@ -18,13 +18,13 @@ namespace BLL.Services
         public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
             : base(unitOfWork, mapper) { }
 
-        public async Task AddPerformerAsync(OrderDTO projectDTO, UserDTO performer)
+        public async Task AddPerformerAsync(OrderDTO orderDTO, UserDTO performer)
         {
-            var searchedProject = await _unitOfWork.OrderRepository
-                .GetByIdAsync(projectDTO.Id);
+            var searchedOrder = await _unitOfWork.OrderRepository
+                .GetByIdAsync(orderDTO.Id);
 
-            if (searchedProject == null)
-                throw new NotFoundException(searchedProject.Title);
+            if (searchedOrder == null)
+                throw new NotFoundException(searchedOrder.Title);
 
             var searchedPerformer = await _unitOfWork.UserRepository
                     .GetByIdAsync(performer.Id);
@@ -32,33 +32,33 @@ namespace BLL.Services
             if (searchedPerformer == null)
                 throw new NotFoundException(searchedPerformer.Name);
 
-            searchedProject.Users.Add(searchedPerformer);
-            searchedPerformer.Order = searchedProject;
+            searchedOrder.Users.Add(searchedPerformer);
+            searchedPerformer.Order = searchedOrder;
 
-            await _unitOfWork.OrderRepository.UpdateAsync(searchedProject);
+            await _unitOfWork.OrderRepository.UpdateAsync(searchedOrder);
             await _unitOfWork.UserRepository.UpdateAsync(searchedPerformer);
         }
 
-        public async Task ChangeDescriptionAsync(OrderDTO projectDTO, string description)
+        public async Task ChangeDescriptionAsync(OrderDTO orderDTO, string description)
         {
-            var searchedProject = await _unitOfWork.OrderRepository
-                .GetByIdAsync(projectDTO.Id);
+            var searchedOrder = await _unitOfWork.OrderRepository
+                .GetByIdAsync(orderDTO.Id);
 
-            if (searchedProject == null)
-                throw new NotFoundException(searchedProject.Title);
+            if (searchedOrder == null)
+                throw new NotFoundException(searchedOrder.Title);
 
-            searchedProject.Description = description;
+            searchedOrder.Description = description;
 
-            await _unitOfWork.OrderRepository.UpdateAsync(searchedProject);
+            await _unitOfWork.OrderRepository.UpdateAsync(searchedOrder);
         }
 
-        public async Task ChangeManagerAsync(OrderDTO projectDTO, UserDTO manager)
+        public async Task ChangeManagerAsync(OrderDTO orderDTO, UserDTO manager)
         {
-            var searchedProject = await _unitOfWork.OrderRepository
-                .GetByIdAsync(projectDTO.Id);
+            var searchedOrder = await _unitOfWork.OrderRepository
+                .GetByIdAsync(orderDTO.Id);
 
-            if (searchedProject == null)
-                throw new NotFoundException(searchedProject.Title);
+            if (searchedOrder == null)
+                throw new NotFoundException(searchedOrder.Title);
 
             var searchedUser = await _unitOfWork.UserRepository
                     .GetByIdAsync(manager.Id);
@@ -66,26 +66,22 @@ namespace BLL.Services
             if (searchedUser == null)
                 throw new NotFoundException(searchedUser.Name);
 
-            if (searchedUser.Role != UserRole.Waiter)
-            {
-                //TODO: add exception / maybe this check wont be needed
-            }
 
-            searchedUser.Order = searchedProject;
-            searchedProject.Chef = searchedUser;
+            searchedUser.Order = searchedOrder;
+            searchedOrder.OrderChef = searchedUser;
 
             await _unitOfWork.UserRepository.UpdateAsync(searchedUser);
-            await _unitOfWork.OrderRepository.UpdateAsync(searchedProject);
+            await _unitOfWork.OrderRepository.UpdateAsync(searchedOrder);
         }
 
-        public async Task CreateOrderAsync(OrderDTO projectDTO)
+        public async Task CreateOrderAsync(OrderDTO orderDTO)
         {
-            var mappedProject = _mapper.Map<Order>(projectDTO);
+            var mappedOrder = _mapper.Map<Order>(orderDTO);
 
-            await _unitOfWork.OrderRepository.AddAsync(mappedProject);
+            await _unitOfWork.OrderRepository.AddAsync(mappedOrder);
         }
 
-        public async Task DeleteOrderAsync(OrderDTO projectDTO, UserDTO manager)
+        public async Task DeleteOrderAsync(OrderDTO orderDTO, UserDTO manager)
         {
             var searchedUser = await _unitOfWork.UserRepository
                 .GetByIdAsync(manager.Id);
@@ -93,27 +89,27 @@ namespace BLL.Services
             if (searchedUser == null)
                 throw new NotFoundException(searchedUser.Name);
 
-            var searchedProject = await _unitOfWork.OrderRepository
-                    .GetByIdAsync(projectDTO.Id);
+            var searchedOrder = await _unitOfWork.OrderRepository
+                    .GetByIdAsync(orderDTO.Id);
 
-            if (searchedProject == null)
-                throw new NotFoundException(searchedProject.Title);
+            if (searchedOrder == null)
+                throw new NotFoundException(searchedOrder.Title);
 
-            if (searchedUser.Role != UserRole.Waiter)
+            if (searchedUser.Role != UserRole.Chef)
             {
                 //exception
             }
 
-            var projects = await _unitOfWork.OrderRepository
+            var orders = await _unitOfWork.OrderRepository
                 .GetAllAsync();
 
             //prbbly should change it
-            bool isCurrentProjectManager = projects
-                .Exists(x => x.Chef.Id == manager.Id);
+            bool isCurrentOrderManager = orders
+                .Exists(x => x.OrderChef.Id == manager.Id);
 
-            if (isCurrentProjectManager)
+            if (isCurrentOrderManager)
             {
-                await _unitOfWork.OrderRepository.DeleteAsync(searchedProject);
+                await _unitOfWork.OrderRepository.DeleteAsync(searchedOrder);
             }
             else
             {
@@ -129,27 +125,27 @@ namespace BLL.Services
             if (searchedUser == null)
                 throw new NotFoundException(searchedUser.Name);
 
-            var projects = await _unitOfWork.OrderRepository
+            var orders = await _unitOfWork.OrderRepository
                 .GetAllAsync();
 
-            var projectsByManager = projects
-                .Where(x => x.Chef.Name == name).ToList();
+            var ordersByManager = orders
+                .Where(x => x.OrderChef.Name == name).ToList();
 
-            if (projectsByManager == null || projectsByManager.Count == 0)
+            if (ordersByManager == null || ordersByManager.Count == 0)
                 throw new NotFoundException("");
 
-            return _mapper.ProjectTo<OrderDTO>(projectsByManager as IQueryable);
+            return _mapper.ProjectTo<OrderDTO>(ordersByManager as IQueryable);
         }
 
         public async Task<OrderDTO> GetOrderByIdAsync(int id)
         {
-            var searcherProject = await _unitOfWork.OrderRepository
+            var searchedOrder = await _unitOfWork.OrderRepository
                 .GetByIdAsync(id);
 
-            if (searcherProject == null)
-                throw new NotFoundException(searcherProject.Title);
+            if (searchedOrder == null)
+                throw new NotFoundException(searchedOrder.Title);
 
-            return _mapper.Map<OrderDTO>(searcherProject);
+            return _mapper.Map<OrderDTO>(searchedOrder);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace DAL.Configurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.HasOne(p => p.Chef)
+            builder.HasOne(p => p.OrderChef)
                 .WithOne(u => u.Order)
-                .HasForeignKey<Staff>(u => u.OrderId);
+                .HasForeignKey<OrderUser>(u => u.OrderId);
 
             builder.HasMany(p => p.Users);
         }

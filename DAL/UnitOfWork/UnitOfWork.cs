@@ -1,5 +1,6 @@
 ﻿using DAL.Base;
 using DAL.Entities;
+using DAL.Entities.TokenModel;
 using DAL.Repository;
 using System;
 using System.Collections.Generic;
@@ -10,35 +11,35 @@ namespace DAL.UnitOfWork
 {
     internal class UnitOfWork : IUnitOfWork, IDisposable
     {
-        public UnitOfWork(RestrauntTrackerContext context) =>
+        public UnitOfWork(RestrauntTaskerContext context) =>
             _context = context;
 
-        readonly RestrauntTrackerContext _context;
+        readonly RestrauntTaskerContext _context;
 
         IRepository<Order> orderRepository;
         IRepository<OrderTask> orderTaskRepository;
-        IRepository<Staff> userRepository;
+        IRepository<OrderUser> userRepository;
         IRepository<DateInfo> dateInfoRepository;
         IRepository<OrderTaskStatus> orderTaskStatusRepository;
         IRepository<UserContacts> userContactsRepository;
 
         public IRepository<Order> OrderRepository => 
-            orderRepository ?? new Repository<Order>(_context);
+            orderRepository ??= new Repository<Order>(_context);
 
         public IRepository<OrderTask> OrderTaskRepository =>
-            orderTaskRepository ?? new Repository<OrderTask>(_context);
+            orderTaskRepository ??= new Repository<OrderTask>(_context);
 
-        public IRepository<Staff> UserRepository =>
-            userRepository ?? new Repository<Staff>(_context);
+        public IRepository<OrderUser> UserRepository =>
+            userRepository ??= new Repository<OrderUser>(_context);
 
         public IRepository<DateInfo> DateInfoRepository =>
-            dateInfoRepository ?? new Repository<DateInfo>(_context);
+            dateInfoRepository ??= new Repository<DateInfo>(_context);
 
         public IRepository<OrderTaskStatus> OrderTaskStatusRepository =>
-            orderTaskStatusRepository ?? new Repository<OrderTaskStatus>(_context);
+            orderTaskStatusRepository ??= new Repository<OrderTaskStatus>(_context);
 
         public IRepository<UserContacts> UserContactsRepository =>
-            userContactsRepository ?? new Repository<UserContacts>(_context);
+            userContactsRepository ??= new Repository<UserContacts>(_context);
 
         public void SaveChanges()
         {

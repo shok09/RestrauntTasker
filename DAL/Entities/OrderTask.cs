@@ -10,8 +10,8 @@ namespace DAL.Entities
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public virtual OrderTaskStatus OrderStatus { get; set; }
+        public virtual OrderTaskStatus TaskStatus { get; set; }
         public virtual DateInfo DateInfo { get; set; }
-        public virtual Staff Performer { get; set; }
+        public virtual OrderUser Performer { get; set; }
     }
 }

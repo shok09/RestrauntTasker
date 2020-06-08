@@ -11,17 +11,17 @@ namespace DAL.Entities
         public Order()
         {
             Tasks = new HashSet<OrderTask>();
-            Users = new HashSet<Staff>();
+            Users = new HashSet<OrderUser>();
         }
 
         public string Title { get; set; }
         public string Description { get; set; }
         public OrderStatus Status { get; set; }
 
-        public virtual Staff Chef { get; set; }
+        public virtual OrderUser OrderChef { get; set; }
 
         public virtual ICollection<OrderTask> Tasks { get; set; }
-        public virtual ICollection<Staff> Users { get; set; }
+        public virtual ICollection<OrderUser> Users { get; set; }
         
     }
 }

@@ -8,6 +8,6 @@ namespace DAL.Entities
     public class DateInfo : BaseEntity<int>
     {
         public DateTime BeginDate { get; set; }
-        public DateTime Deadline { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }

@@ -15,20 +15,20 @@ namespace BLL.DTO
         public decimal ExecutedPercent { get; set; }
         public int State { get; set; }
         public DateTime BeginDate { get; set; }
-        public DateTime Deadline { get; set; }
+        public DateTime EndDate { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<OrderTask, OrderTaskDTO>()
-                .ForMember(d => d.ExecutedPercent, opt => opt.MapFrom(src => src.OrderStatus.ExecutedPercent))
-                .ForMember(d => d.State, opt => opt.MapFrom(src => src.OrderStatus.State))
+                .ForMember(d => d.ExecutedPercent, opt => opt.MapFrom(src => src.TaskStatus.ExecutedPercent))
+                .ForMember(d => d.State, opt => opt.MapFrom(src => src.TaskStatus.State))
                 .ForMember(d => d.BeginDate, opt => opt.MapFrom(src => src.DateInfo.BeginDate))
-                .ForMember(d => d.Deadline, opt => opt.MapFrom(src => src.DateInfo.Deadline))
+                .ForMember(d => d.EndDate, opt => opt.MapFrom(src => src.DateInfo.EndDate))
                 .ReverseMap()
-                .ForPath(s => s.OrderStatus.ExecutedPercent, opt => opt.MapFrom(src => src.ExecutedPercent))
-                .ForPath(s => s.OrderStatus.State, opt => opt.MapFrom(src => src.State))
+                .ForPath(s => s.TaskStatus.ExecutedPercent, opt => opt.MapFrom(src => src.ExecutedPercent))
+                .ForPath(s => s.TaskStatus.State, opt => opt.MapFrom(src => src.State))
                 .ForPath(s => s.DateInfo.BeginDate, opt => opt.MapFrom(src => src.BeginDate))
-                .ForPath(s => s.DateInfo.Deadline, opt => opt.MapFrom(src => src.Deadline));
+                .ForPath(s => s.DateInfo.EndDate, opt => opt.MapFrom(src => src.EndDate));
         }
     }
 }

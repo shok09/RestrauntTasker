@@ -27,7 +27,7 @@ namespace API.Services.AuthEmailSender
 
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("TaskTracker", Options.SendGridUser),
+                From = new EmailAddress("RestrauntTasker", Options.SendGridUser),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(RestrauntTaskerContext))]
-    [Migration("20200514162641_AddIdentity")]
-    partial class AddIdentity
+    [Migration("20200608011623_OrderingSystem")]
+    partial class OrderingSystem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -140,10 +140,10 @@ namespace DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PerformerId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderId")
+                    b.Property<int?>("PerformerId")
                         .HasColumnType("int");
 
                     b.Property<int?>("TaskStatusId")
@@ -158,9 +158,9 @@ namespace DAL.Migrations
 
                     b.HasIndex("DateInfoId");
 
-                    b.HasIndex("PerformerId");
-
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("PerformerId");
 
                     b.HasIndex("TaskStatusId");
 
@@ -192,7 +192,7 @@ namespace DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("IdentityId")
+                    b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -203,7 +203,7 @@ namespace DAL.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProjectId1")
+                    b.Property<int?>("OrderId1")
                         .HasColumnType("int");
 
                     b.Property<int>("Role")
@@ -217,18 +217,44 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdentityId");
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("Name");
 
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.HasIndex("ProjectId1");
+                    b.HasIndex("OrderId1");
 
                     b.HasIndex("UserContactsId1");
 
                     b.ToTable("OrderUsers");
+                });
+
+            modelBuilder.Entity("DAL.Entities.TokenModel.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("OrderUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderUserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("DAL.Entities.UserContacts", b =>
@@ -386,13 +412,13 @@ namespace DAL.Migrations
                         .WithMany()
                         .HasForeignKey("DateInfoId");
 
-                    b.HasOne("DAL.Entities.OrderUser", "Cook")
-                        .WithMany("Tasks")
-                        .HasForeignKey("PerformerId");
-
                     b.HasOne("DAL.Entities.Order", null)
                         .WithMany("Tasks")
                         .HasForeignKey("OrderId");
+
+                    b.HasOne("DAL.Entities.OrderUser", "Performer")
+                        .WithMany("Tasks")
+                        .HasForeignKey("PerformerId");
 
                     b.HasOne("DAL.Entities.OrderTaskStatus", "TaskStatus")
                         .WithMany()
@@ -401,23 +427,30 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.OrderUser", b =>
                 {
-                    b.HasOne("DAL.Entities.IdentityModel.ApplicationUser", "Identity")
+                    b.HasOne("DAL.Entities.IdentityModel.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("IdentityId");
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("DAL.Entities.Order", "Order")
-                        .WithOne("Chef")
+                        .WithOne("OrderChef")
                         .HasForeignKey("DAL.Entities.OrderUser", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Order", null)
                         .WithMany("Users")
-                        .HasForeignKey("ProjectId1");
+                        .HasForeignKey("OrderId1");
 
                     b.HasOne("DAL.Entities.UserContacts", "UserContacts")
                         .WithMany()
                         .HasForeignKey("UserContactsId1");
+                });
+
+            modelBuilder.Entity("DAL.Entities.TokenModel.RefreshToken", b =>
+                {
+                    b.HasOne("DAL.Entities.OrderUser", null)
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("OrderUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

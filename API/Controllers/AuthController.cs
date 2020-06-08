@@ -2,14 +2,16 @@
 using DAL.Entities.IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http.ModelBinding;
 using Microsoft.Extensions.Options;
 using API.Services.JwtAuth;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using BLL.Services.Interfaces;
+using API.Services.JwtAuth.Interfaces;
+using BLL.DTO;
+using API.Models.Settings;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -17,14 +19,25 @@ namespace API.Controllers
     public class AuthController : ControllerBase
     {
         readonly UserManager<ApplicationUser> _userManager;
+        readonly AuthSettings _authSettings;
         readonly IJwtFactory _jwtFactory;
+        readonly ITokenValidator _tokenValidator;
         readonly IEmailSender _emailSender;
-        
-        public AuthController(UserManager<ApplicationUser> userManager, IJwtFactory jwtFactory, IEmailSender emailSender)
+        readonly IUserService _userService;
+
+        public AuthController(UserManager<ApplicationUser> userManager,
+            IOptions<AuthSettings> authSettings,
+            IJwtFactory jwtFactory,
+            IEmailSender emailSender,
+            IUserService userService,
+            ITokenValidator tokenValidator)
         {
             _userManager = userManager;
+            _authSettings = authSettings.Value;
             _jwtFactory = jwtFactory;
+            _tokenValidator = tokenValidator;
             _emailSender = emailSender;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -39,26 +52,33 @@ namespace API.Controllers
                 UserName = model.UserName
             };
 
-            var result = await _userManager.CreateAsync(appUser, model.Password);
-
-            if (result.Succeeded)
+            var userCreateResult = await _userManager.CreateAsync(appUser, model.Password);
+            
+            if (userCreateResult.Succeeded)
             {
-                await _userManager.AddToRoleAsync(appUser, model.Role);
+                /*await _userService.CreateUserAsync(new UserDTO 
+                { 
+                    Name = model.UserName,
+                    Email = model.Email,
+                    ApplicationUserId = appUser.Id
+                });
+                */
+                //await _userManager.AddToRoleAsync(appUser, model.Role);
 
-                var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
+                //var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
 
-                var callbackUrl = Url.Action(
-                    "ConfirmEmail",
-                    "Auth",
-                    new { UserId = appUser.Id, EmailToken = emailToken },
-                    HttpContext.Request.Scheme);
+                //var callbackUrl = Url.Action(
+                //    "ConfirmEmail",
+                //    "Auth",
+                //    new { UserId = appUser.Id, EmailToken = emailToken },
+                //    HttpContext.Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
-                    appUser.Email,
-                    "TaskTracker - Confirm Your Email",
-                    "Please confirm your e-mail by clicking this link: <a href=\"" + callbackUrl + "\">click here</a>");
+                //await _emailSender.SendEmailAsync(
+                //    appUser.Email,
+                //    "RestrauntTasker - Confirm Your Email",
+                //    "Please confirm your e-mail by clicking this link: <a href=\"" + callbackUrl + "\">click here</a>");
 
-                return Ok(result);
+                return Ok(userCreateResult);
             }
             else return BadRequest(new { message = "error"});
         }
@@ -71,40 +91,63 @@ namespace API.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = await _userManager.FindByNameAsync(model.UserName);
-
+          
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var roles = await _userManager.GetRolesAsync(user);
+                //var roles = await _userManager.GetRolesAsync(user);
+               
+                var accessToken = await _jwtFactory.GenerateEncodedToken(user.Id, user.UserName, "Cook");
+                var refreshToken = _jwtFactory.GenerateRefreshToken();
 
-                var token = await _jwtFactory.GenerateEncodedToken(user.Id, user.UserName, roles.FirstOrDefault());
-
-                return Ok(token);
+                //await _userService.AddRefreshTokenAsync(refreshToken, user.Id);
+                
+                return Ok( new { accessToken, refreshToken });
             }
             else return BadRequest(new { message = "Incorrect user info" });
         }
 
-        /*public async Task<IActionResult> ConfirmEmail(string userId, string emailToken)
+        [HttpPost]
+        [Route("auth/refreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenViewModel model)
         {
-            if(string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(emailToken))
-            {
-                ModelState.AddModelError("", "User Id and Code are required");
-                return BadRequest(ModelState);
-            }
+            var principal = _tokenValidator.GetPrincipalFromToken(model.AccessToken, _authSettings.SecretKey);
 
-            var user = await _userManager.FindByIdAsync(userId);
+            if (principal == null) return BadRequest(new { message = "Invalid token" });
 
-            if (user == null)
-                return BadRequest(new { message = "error"});
+            var id = principal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(id.Value);
+            
+            var jwtToken = await _jwtFactory.GenerateEncodedToken(user.Id, user.UserName, "Cook");
+            var refreshToken = _jwtFactory.GenerateRefreshToken();
 
-            if (user.EmailConfirmed)
-                return Redirect("/login");
+            await _userService.ExchangeRefreshTokenAsync(model.RefreshToken, refreshToken, user.Id);
 
-            var result = await _userManager.ConfirmEmailAsync(user, emailToken);
+            return Ok(new { jwtToken, refreshToken });           
+        }   
 
-            if (!result.Succeeded)
-                return BadRequest(new { message = "error" });
 
-            return RedirectToAction();
-        }*/
+        //public async Task<IActionResult> ConfirmEmail(string userId, string emailToken)
+        //{
+        //    if(string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(emailToken))
+        //    {
+        //        ModelState.AddModelError("", "User Id and Code are required");
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    var user = await _userManager.FindByIdAsync(userId);
+
+        //    if (user == null)
+        //        return BadRequest(new { message = "error"});
+
+        //    if (user.EmailConfirmed)
+        //        return Redirect("/login");
+
+        //    var result = await _userManager.ConfirmEmailAsync(user, emailToken);
+
+        //    if (!result.Succeeded)
+        //        return BadRequest(new { message = "error" });
+
+        //    return RedirectToAction();
+        //}
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using API.Services.JwtAuth;
+using API.Services.JwtAuth.Interfaces;
 
 namespace API.Configurations
 {
@@ -15,6 +16,7 @@ namespace API.Configurations
         public static IServiceCollection AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.AddScoped<ITokenValidator, TokenValidator>();
 
             var authSettings = configuration.GetSection(nameof(AuthSettings));
             services.Configure<AuthSettings>(authSettings);
@@ -61,7 +63,7 @@ namespace API.Configurations
             services.AddAuthorization(opt =>
             {
                 opt.AddPolicy("RequirePerformerRole", policy => policy.RequireRole("Cook").RequireAuthenticatedUser());
-                opt.AddPolicy("RequireManagerRole", policy => policy.RequireRole("Waiter").RequireAuthenticatedUser());
+                opt.AddPolicy("RequireManagerRole", policy => policy.RequireRole("Chef").RequireAuthenticatedUser());
             });
 
             return services;

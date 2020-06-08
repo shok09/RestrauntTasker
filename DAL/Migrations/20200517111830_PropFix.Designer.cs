@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
-    [DbContext(typeof(RestrauntTrackerContext))]
+    [DbContext(typeof(RestrauntTaskerContext))]
     [Migration("20200517111830_PropFix")]
     partial class PropFix
     {
@@ -31,7 +31,7 @@ namespace DAL.Migrations
                     b.Property<DateTime>("BeginDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Deadline")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -185,7 +185,7 @@ namespace DAL.Migrations
                     b.ToTable("TaskStatuses");
                 });
 
-            modelBuilder.Entity("DAL.Entities.Staff", b =>
+            modelBuilder.Entity("DAL.Entities.OrderUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -203,7 +203,7 @@ namespace DAL.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderId1")
+                    b.Property<int?>("ProjectId1")
                         .HasColumnType("int");
 
                     b.Property<int>("Role")
@@ -224,7 +224,7 @@ namespace DAL.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.HasIndex("OrderId1");
+                    b.HasIndex("ProjectId1");
 
                     b.HasIndex("UserContactsId1");
 
@@ -390,7 +390,7 @@ namespace DAL.Migrations
                         .WithMany()
                         .HasForeignKey("DateInfoId");
 
-                    b.HasOne("DAL.Entities.Staff", "Cook")
+                    b.HasOne("DAL.Entities.OrderUser", "Cook")
                         .WithMany("Tasks")
                         .HasForeignKey("PerformerId");
 
@@ -398,26 +398,26 @@ namespace DAL.Migrations
                         .WithMany("Tasks")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("DAL.Entities.OrderTaskStatus", "OrderStatus")
+                    b.HasOne("DAL.Entities.OrderTaskStatus", "TaskStatus")
                         .WithMany()
                         .HasForeignKey("TaskStatusId");
                 });
 
-            modelBuilder.Entity("DAL.Entities.Staff", b =>
+            modelBuilder.Entity("DAL.Entities.OrderUser", b =>
                 {
                     b.HasOne("DAL.Entities.IdentityModel.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("DAL.Entities.Order", "Order")
-                        .WithOne("Chef")
-                        .HasForeignKey("DAL.Entities.Staff", "OrderId")
+                        .WithOne("OrderChef")
+                        .HasForeignKey("DAL.Entities.OrderUser", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Order", null)
                         .WithMany("Users")
-                        .HasForeignKey("OrderId1");
+                        .HasForeignKey("ProjectId1");
 
                     b.HasOne("DAL.Entities.UserContacts", "UserContacts")
                         .WithMany()

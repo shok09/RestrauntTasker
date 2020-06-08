@@ -73,22 +73,22 @@ namespace DAL.Migrations
                     Name = table.Column<string>(maxLength: 80, nullable: false),
                     UserContactsId = table.Column<string>(nullable: true),
                     Role = table.Column<int>(nullable: false),
-                    OrderId = table.Column<int>(nullable: false),
+                    ProjectId = table.Column<int>(nullable: false),
                     UserContactsId1 = table.Column<int>(nullable: true),
-                    OrderId1 = table.Column<int>(nullable: true)
+                    ProjectId1 = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Projects_OrderId",
-                        column: x => x.OrderId,
+                        name: "FK_Users_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Users_Projects_OrderId1",
-                        column: x => x.OrderId1,
+                        name: "FK_Users_Projects_ProjectId1",
+                        column: x => x.ProjectId1,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -111,7 +111,7 @@ namespace DAL.Migrations
                     TaskStatusId = table.Column<int>(nullable: true),
                     DateInfoId = table.Column<int>(nullable: true),
                     PerformerId = table.Column<int>(nullable: true),
-                    OrderId = table.Column<int>(nullable: true)
+                    ProjectId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -129,8 +129,8 @@ namespace DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tasks_Projects_OrderId",
-                        column: x => x.OrderId,
+                        name: "FK_Tasks_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -153,7 +153,7 @@ namespace DAL.Migrations
                 column: "PerformerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_OrderId",
+                name: "IX_Tasks_ProjectId",
                 table: "Tasks",
                 column: "OrderId");
 
@@ -168,15 +168,15 @@ namespace DAL.Migrations
                 column: "Name");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_OrderId",
+                name: "IX_Users_ProjectId",
                 table: "Users",
                 column: "OrderId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_OrderId1",
+                name: "IX_Users_ProjectId1",
                 table: "Users",
-                column: "OrderId1");
+                column: "ProjectId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_UserContactsId1",

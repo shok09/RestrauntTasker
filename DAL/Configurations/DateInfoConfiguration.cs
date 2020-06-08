@@ -14,7 +14,7 @@ namespace DAL.Configurations
             builder.Property(dt => dt.BeginDate)
                 .IsRequired();
 
-            builder.Property(dt => dt.Deadline)
+            builder.Property(dt => dt.EndDate)
                 .IsRequired();
         }
     }

@@ -54,10 +54,10 @@ namespace BLL.Services
                 .AddAsync(mappedTask);
         }
 
-        public async Task ChangeDesriptionAsync(OrderTaskDTO projectTaskDTO, string description)
+        public async Task ChangeDesriptionAsync(OrderTaskDTO orderTaskDTO, string description)
         {
             var searchedTask = await _unitOfWork.OrderTaskRepository
-                .GetByIdAsync(projectTaskDTO.Id);
+                .GetByIdAsync(orderTaskDTO.Id);
 
             if (searchedTask == null)
                 throw new NotFoundException(searchedTask.Title);

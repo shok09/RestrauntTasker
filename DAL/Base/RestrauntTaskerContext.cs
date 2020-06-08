@@ -3,20 +3,22 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using DAL.Entities.IdentityModel;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using DAL.Entities.TokenModel;
 
 namespace DAL.Base
 {
-    internal class RestrauntTrackerContext : IdentityDbContext<ApplicationUser>
+    internal class RestrauntTaskerContext : IdentityDbContext<ApplicationUser>
     {
-        public RestrauntTrackerContext(DbContextOptions<RestrauntTrackerContext> options)
+        public RestrauntTaskerContext(DbContextOptions<RestrauntTaskerContext> options)
             : base(options) { }
 
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderTask> Tasks { get; set; }
-        public DbSet<Staff> OrderUsers { get; set; }
+        public DbSet<OrderUser> OrderUsers { get; set; }
         public DbSet<DateInfo> DateInfos { get; set; }
         public DbSet<OrderTaskStatus> TaskStatuses { get; set; }
         public DbSet<UserContacts> UserContacts { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

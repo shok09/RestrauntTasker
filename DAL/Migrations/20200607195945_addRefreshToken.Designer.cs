@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(RestrauntTaskerContext))]
-    [Migration("20200514162641_AddIdentity")]
-    partial class AddIdentity
+    [Migration("20200607195945_addRefreshToken")]
+    partial class addRefreshToken
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -192,7 +192,7 @@ namespace DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("IdentityId")
+                    b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -217,7 +217,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdentityId");
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("Name");
 
@@ -229,6 +229,32 @@ namespace DAL.Migrations
                     b.HasIndex("UserContactsId1");
 
                     b.ToTable("OrderUsers");
+                });
+
+            modelBuilder.Entity("DAL.Entities.TokenModel.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ProjectUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectUserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("DAL.Entities.UserContacts", b =>
@@ -401,12 +427,12 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.OrderUser", b =>
                 {
-                    b.HasOne("DAL.Entities.IdentityModel.ApplicationUser", "Identity")
+                    b.HasOne("DAL.Entities.IdentityModel.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("IdentityId");
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("DAL.Entities.Order", "Order")
-                        .WithOne("Chef")
+                        .WithOne("OrderChef")
                         .HasForeignKey("DAL.Entities.OrderUser", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -418,6 +444,13 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.UserContacts", "UserContacts")
                         .WithMany()
                         .HasForeignKey("UserContactsId1");
+                });
+
+            modelBuilder.Entity("DAL.Entities.TokenModel.RefreshToken", b =>
+                {
+                    b.HasOne("DAL.Entities.OrderUser", null)
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("ProjectUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

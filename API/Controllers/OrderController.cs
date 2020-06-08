@@ -24,7 +24,7 @@ namespace API.Controllers
         [HttpGet]
         [Route("order/{id}")]
         [Authorize(Policy = "RequirePerformerRole")]
-        public async Task<IActionResult> GetProject(int id)
+        public async Task<IActionResult> GetOrder(int id)
         {
             var order = await _orderService.
                 GetOrderByIdAsync(id);
@@ -34,7 +34,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("order/add")]
-        public async Task<IActionResult> AddProjectAsync([FromBody] OrderDTO orderDTO)
+        public async Task<IActionResult> AddOrderAsync([FromBody] OrderDTO orderDTO)
         {
             await _orderService.CreateOrderAsync(orderDTO);
 

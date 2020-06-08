@@ -7,10 +7,13 @@ using System.Text;
 
 namespace DAL.Configurations
 {
-    internal class OrderUserConfiguration : IEntityTypeConfiguration<Staff>
+    internal class OrderUserConfiguration : IEntityTypeConfiguration<OrderUser>
     {
-        public void Configure(EntityTypeBuilder<Staff> builder)
+        public void Configure(EntityTypeBuilder<OrderUser> builder)
         {
+            var navigation = builder.Metadata.FindNavigation(nameof(OrderUser.RefreshTokens));
+            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+
             builder.Property(u => u.Name)
                 .HasMaxLength(80)
                 .IsRequired();

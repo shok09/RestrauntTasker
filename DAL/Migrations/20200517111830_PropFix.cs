@@ -7,11 +7,11 @@ namespace DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_OrderUsers_AspNetUsers_IdentityId",
+                name: "FK_ProjectUsers_AspNetUsers_IdentityId",
                 table: "OrderUsers");
 
             migrationBuilder.DropIndex(
-                name: "IX_OrderUsers_IdentityId",
+                name: "IX_ProjectUsers_IdentityId",
                 table: "OrderUsers");
 
             migrationBuilder.DropColumn(
@@ -24,12 +24,12 @@ namespace DAL.Migrations
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderUsers_ApplicationUserId",
+                name: "IX_ProjectUsers_ApplicationUserId",
                 table: "OrderUsers",
                 column: "ApplicationUserId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_OrderUsers_AspNetUsers_ApplicationUserId",
+                name: "FK_ProjectUsers_AspNetUsers_ApplicationUserId",
                 table: "OrderUsers",
                 column: "ApplicationUserId",
                 principalTable: "AspNetUsers",
@@ -40,11 +40,11 @@ namespace DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_OrderUsers_AspNetUsers_ApplicationUserId",
+                name: "FK_ProjectUsers_AspNetUsers_ApplicationUserId",
                 table: "OrderUsers");
 
             migrationBuilder.DropIndex(
-                name: "IX_OrderUsers_ApplicationUserId",
+                name: "IX_ProjectUsers_ApplicationUserId",
                 table: "OrderUsers");
 
             migrationBuilder.DropColumn(
@@ -58,12 +58,12 @@ namespace DAL.Migrations
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderUsers_IdentityId",
+                name: "IX_ProjectUsers_IdentityId",
                 table: "OrderUsers",
                 column: "IdentityId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_OrderUsers_AspNetUsers_IdentityId",
+                name: "FK_ProjectUsers_AspNetUsers_IdentityId",
                 table: "OrderUsers",
                 column: "IdentityId",
                 principalTable: "AspNetUsers",

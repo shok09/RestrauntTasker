@@ -8,6 +8,6 @@ namespace DAL.Entities.Enums
     {
         Administrator,
         Cook,
-        Waiter,
+        Chef,
     }
 }
