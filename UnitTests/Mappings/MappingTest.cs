@@ -23,13 +23,14 @@ namespace RestrauntTasker.UnitTests.Mappings
         }
 
         [Theory]
-        [InlineData(typeof(Order), typeof(OrderDTO))]
-        [InlineData(typeof(OrderUser), typeof(UserDTO))]
-        public void MappingFromSourceToDestination_TestPassed(Type source, Type destination)
+        [InlineData(typeof(Order), typeof(OrderDTO), "Mario")]
+        public void MappingFromSourceToDestination_TestPassed(Type source, Type destination, string title)
         {
-            var example = Activator.CreateInstance(source);
-
-            mapper.Map(example, source, destination);
+            var theorder = new Order { Title = title };
+            OrderDTO theorderDTO = mapper.Map<OrderDTO>(theorder);
+            Assert.Equal(theorderDTO.Title, theorder.Title);
+            Assert.Equal(theorder.GetType(), source);
+            Assert.Equal(theorderDTO.GetType(), destination);
         }
     }
 }

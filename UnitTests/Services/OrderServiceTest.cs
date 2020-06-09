@@ -26,9 +26,9 @@ namespace RestrauntTasker.UnitTests.Services
 
             var result = orderService.GetOrderByIdAsync(id);
 
-            var supposedOrder = new Order { Title = "Web application" };
+            var supposedOrder = new Order { OrderChef = new OrderUser { Name = "Anna" } };
 
-            Assert.Equal(supposedOrder.Title, result.Result.Title);
+            Assert.Equal(supposedOrder.OrderChef.Name, result.Result.Chef);
         }
     }
 }
