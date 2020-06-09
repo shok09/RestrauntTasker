@@ -1,0 +1,13 @@
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand text-white">RestaurantTasker</a>
+    <button class="btn btn-danger my-2 my-sm-0" (click)="onLogout()">Add Task</button>
+    <button class="btn btn-danger my-2 my-sm-0" (click)="onLogout()">Logout</button>
+  </nav>
+  <div class="card m-5" style="width:18rem" *ngIf="userDetails">
+    <ul class="list-group">
+      <li class="list-group-item"><strong>Title : </strong>{{userDetails.title}}</li>
+      <li class="list-group-item"><strong>Description : </strong>{{userDetails.description}}</li>
+      <li class="list-group-item"><strong>Status : </strong>{{userDetails.status}}</li>
+      <li class="list-group-item"><strong>Manager : </strong>{{userDetails.manager}}</li>
+    </ul>
+  </div>

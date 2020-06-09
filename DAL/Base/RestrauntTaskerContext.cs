@@ -7,7 +7,7 @@ using DAL.Entities.TokenModel;
 
 namespace DAL.Base
 {
-    internal class RestrauntTaskerContext : IdentityDbContext<ApplicationUser>
+    public class RestrauntTaskerContext : IdentityDbContext<ApplicationUser>
     {
         public RestrauntTaskerContext(DbContextOptions<RestrauntTaskerContext> options)
             : base(options) { }

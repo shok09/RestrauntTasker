@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DAL.UnitOfWork
 {
-    internal class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         public UnitOfWork(RestrauntTaskerContext context) =>
             _context = context;

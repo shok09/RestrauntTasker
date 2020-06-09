@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BLL.Mapper
 {
-    class MapperProfile : Profile
+    public class MapperProfile : Profile
     {
         public MapperProfile() =>
             ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
