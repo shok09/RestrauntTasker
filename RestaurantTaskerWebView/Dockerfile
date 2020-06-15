@@ -1,6 +1,12 @@
-FROM node:8
-RUN mkdir /usr/src/app 
- 
-WORKDIR /usr/src/app
-RUN npm install -g @angular/cli 
-COPY . . 
+FROM node:10.15-alpine AS client
+EXPOSE 4200 49153
+USER node
+
+RUN mkdir /home/node/.npm-global
+ENV PATH=/home/node/.npm-global/bin:$PATH
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+
+RUN npm install -g @angular/cli@8.1.6
+
+WORKDIR /app
+CMD ["ng", "serve", "--port", "4200", "--host", "0.0.0.0", "--disable-host-check", "--poll", "4200"]
